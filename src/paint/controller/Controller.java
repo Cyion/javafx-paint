@@ -3,6 +3,7 @@ package paint.controller;
 import javafx.application.Application;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
+import javafx.scene.control.Button;
 import javafx.scene.control.ColorPicker;
 import javafx.scene.control.ComboBox;
 import javafx.scene.layout.BorderPane;
@@ -12,6 +13,7 @@ import javafx.scene.paint.Color;
 import javafx.stage.Stage;
 import paint.view.CanvasPaintWrapper;
 import paint.view.ColorPane;
+import paint.view.NewCanvasPane;
 
 public class Controller extends Application {
     private BorderPane root = new BorderPane();
@@ -21,6 +23,8 @@ public class Controller extends Application {
     private ColorPane customColorPane = new ColorPane(this.wrapper);
     private ColorPicker colorPicker = new ColorPicker();
     private ComboBox<Integer> intensity = new ComboBox<>();
+    private NewCanvasPane newCanvasPane = new NewCanvasPane(this.wrapper);
+    private Button saveButton = new Button("Speichern");
 
     public Controller() {
         this.colorPane.addColor(Color.RED);
@@ -34,21 +38,22 @@ public class Controller extends Application {
         this.colorPane.addColor(Color.WHITE);
 
         this.customColorPane.setMaxColumns(9);
-        this.customColorPane.addColor(Color.WHITE);
-        this.customColorPane.addColor(Color.WHITE);
-        this.customColorPane.addColor(Color.WHITE);
-        this.customColorPane.addColor(Color.WHITE);
-        this.customColorPane.addColor(Color.WHITE);
-        this.customColorPane.addColor(Color.WHITE);
-        this.customColorPane.addColor(Color.WHITE);
-        this.customColorPane.addColor(Color.WHITE);
-        this.customColorPane.addColor(Color.WHITE);
+        this.customColorPane.addColor(null);
+        this.customColorPane.addColor(null);
+        this.customColorPane.addColor(null);
+        this.customColorPane.addColor(null);
+        this.customColorPane.addColor(null);
+        this.customColorPane.addColor(null);
+        this.customColorPane.addColor(null);
+        this.customColorPane.addColor(null);
+        this.customColorPane.addColor(null);
 
         this.colorPicker.getStyleClass().add(ColorPicker.STYLE_CLASS_BUTTON);
         this.colorPicker.setOnAction(e -> {
             this.customColorPane.addColor(this.colorPicker.getValue());
             this.wrapper.setColor(this.colorPicker.getValue());
         });
+        //TODO: ColorPicker should display the currently selected color (from the canvas). (Properties)
 
         this.intensity.getItems().addAll(1, 2, 3, 4, 5, 6, 7, 8, 9, 10);
         this.intensity.getSelectionModel().selectFirst();
@@ -57,9 +62,11 @@ public class Controller extends Application {
         VBox colorPaneWrapper = new VBox();
         colorPaneWrapper.getChildren().addAll(this.colorPane, this.customColorPane);
 
+        this.saveButton.setOnAction(e -> this.wrapper.save());
+
         this.toolPane.setSpacing(20);
         this.toolPane.setAlignment(Pos.CENTER_LEFT);
-        this.toolPane.getChildren().addAll(colorPaneWrapper, this.colorPicker, this.intensity);
+        this.toolPane.getChildren().addAll(colorPaneWrapper, this.colorPicker, this.intensity, this.newCanvasPane, this.saveButton);
 
         this.root.setTop(this.toolPane);
         this.root.setCenter(this.wrapper);

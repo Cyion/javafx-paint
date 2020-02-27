@@ -21,16 +21,20 @@ public class ColorPane extends GridPane {
 
     /**
      * Adds a new color button to the pane, with respect to the orientation and the column/row constraints.
-     * @param color
+     * @param color If this is null, a dummy button will be added to the pane (with no effect).
      */
     public void addColor(Color color) {
         Canvas canvas = new Canvas(20, 20);
-        canvas.getGraphicsContext2D().setFill(color);
-        canvas.getGraphicsContext2D().fillRect(0, 0, 20, 20);
+
         Button colorButton = new Button();
         colorButton.setPadding(new Insets(3, 3, 3, 3));
         colorButton.setGraphic(canvas);
-        colorButton.setOnAction(e -> wrapper.setColor(color));
+
+        if (color != null) {
+            canvas.getGraphicsContext2D().setFill(color);
+            canvas.getGraphicsContext2D().fillRect(0, 0, 20, 20);
+            colorButton.setOnAction(e -> wrapper.setColor(color));
+        }
         this.buttons.add(colorButton);
         refreshButtons();
     }

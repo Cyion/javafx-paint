@@ -1,15 +1,22 @@
 package paint.view;
 
+import javafx.embed.swing.SwingFXUtils;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.control.ScrollPane;
+import javafx.scene.image.WritableImage;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.StrokeLineCap;
 import javafx.scene.shape.StrokeLineJoin;
+import javafx.stage.FileChooser;
+import javax.imageio.ImageIO;
+import java.awt.image.RenderedImage;
+import java.io.File;
+import java.io.IOException;
 
 public class CanvasPaintWrapper extends ScrollPane {
-    private Canvas canvas = new Canvas(1600, 900);;
-    private GraphicsContext graphicsContext = this.canvas.getGraphicsContext2D();;
+    private Canvas canvas = new Canvas(1600, 850);
+    private GraphicsContext graphicsContext = this.canvas.getGraphicsContext2D();
 
     public CanvasPaintWrapper() {
         this.canvas.setOnMousePressed(e -> this.graphicsContext.beginPath());
@@ -44,11 +51,48 @@ public class CanvasPaintWrapper extends ScrollPane {
     }
 
     /**
-     * Clears the painting Canvas.
+     * Clears the painting canvas.
      */
     public void clearCanvas() {
         this.graphicsContext.setFill(Color.WHITE);
         this.graphicsContext.fillRect(0, 0, this.canvas.getWidth(), this.canvas.getHeight());
+    }
+
+    /**
+     * Resizes the painting canvas.
+     * @param width
+     * @param height
+     */
+    public void resizeCanvas(double width, double height) {
+        this.canvas.setHeight(height);
+        this.canvas.setWidth(width);
+        clearCanvas();
+    }
+
+    /**
+     * Saves the painting as a .png file.
+     */
+    public void save() {
+        FileChooser fileChooser = new FileChooser();
+
+        //Set extension filter
+        FileChooser.ExtensionFilter extFilter =
+                new FileChooser.ExtensionFilter("png files (*.png)", "*.png");
+        fileChooser.getExtensionFilters().add(extFilter);
+
+        //Show save file dialog
+        File file = fileChooser.showSaveDialog(this.getScene().getWindow());
+
+        if (file != null) {
+            try {
+                WritableImage writableImage = new WritableImage((int) this.canvas.getWidth(), (int) this.canvas.getHeight());
+                canvas.snapshot(null, writableImage);
+                RenderedImage renderedImage = SwingFXUtils.fromFXImage(writableImage, null);
+                ImageIO.write(renderedImage, "png", file);
+            } catch (IOException ex) {
+
+            }
+        }
     }
 
     /**
