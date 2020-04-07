@@ -19,9 +19,7 @@ public class CanvasPaintWrapper extends ScrollPane {
     private GraphicsContext graphicsContext = this.canvas.getGraphicsContext2D();
 
     public CanvasPaintWrapper() {
-        this.canvas.setOnMousePressed(e -> this.graphicsContext.beginPath());
-        this.canvas.setOnMouseDragged(e -> draw(e.getX(), e.getY()));
-        this.canvas.setOnMouseReleased(e -> this.graphicsContext.closePath());
+        setTool(Tools.BRUSH); //TODO: Maybe remove this?
         clearCanvas();
         this.setContent(this.canvas);
     }
@@ -32,6 +30,7 @@ public class CanvasPaintWrapper extends ScrollPane {
      */
     public void setColor(Color color) {
         this.graphicsContext.setStroke(color);
+        this.graphicsContext.setFill(color);
     }
 
     /**
@@ -95,6 +94,17 @@ public class CanvasPaintWrapper extends ScrollPane {
         }
     }
 
+    public void setTool(CanvasPaintWrapper.Tools tool) {
+        switch (tool) {
+            case BRUSH:
+                this.canvas.setOnMousePressed(e -> this.graphicsContext.beginPath());
+                this.canvas.setOnMouseDragged(e -> draw(e.getX(), e.getY()));
+                this.canvas.setOnMouseReleased(e -> this.graphicsContext.closePath());
+                this.canvas.setOnMouseClicked(null);
+                break;
+        }
+    }
+
     /**
      * Draws a line to (x, y).
      * @param x coordinate of endpoint
@@ -105,5 +115,9 @@ public class CanvasPaintWrapper extends ScrollPane {
         this.graphicsContext.setLineJoin(StrokeLineJoin.ROUND);
         this.graphicsContext.lineTo(x, y);
         this.graphicsContext.stroke();
+    }
+
+    public enum Tools {
+        BRUSH
     }
 }

@@ -11,7 +11,7 @@ import java.util.List;
 public class ColorPane extends GridPane {
     private CanvasPaintWrapper wrapper;
     private List<Button> buttons = new ArrayList<>(); //TODO trim the list to actual color size (e.g. maxRow and maxColumn)
-    private Orientation orientation = Orientation.ColumnSpan;
+    private Orientation orientation = Orientation.COLUMN_SPAN;
     private int maxRow = Integer.MAX_VALUE;
     private int maxColumn = Integer.MAX_VALUE;
 
@@ -75,13 +75,13 @@ public class ColorPane extends GridPane {
         int column = 0;
         for (Button button : this.buttons) {
             this.add(button, column, row);
-            if (this.orientation == Orientation.ColumnSpan) {
+            if (this.orientation == Orientation.COLUMN_SPAN) {
                 if (column < this.maxColumn) {
                     column++;
                 } else {
                     column = 0;
                 }
-            } else if (this.orientation == Orientation.RowSpan) {
+            } else if (this.orientation == Orientation.ROW_SPAN) {
                 if (row < this.maxRow) {
                     row++;
                 } else {
@@ -104,6 +104,6 @@ public class ColorPane extends GridPane {
     }
 
     public enum Orientation {
-        ColumnSpan, RowSpan, ColumnRowSpan
+        COLUMN_SPAN, ROW_SPAN, COLUMN_ROW_SPAN
     }
 }

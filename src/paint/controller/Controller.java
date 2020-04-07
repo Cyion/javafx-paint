@@ -23,6 +23,7 @@ public class Controller extends Application {
     private ColorPane customColorPane = new ColorPane(this.wrapper);
     private ColorPicker colorPicker = new ColorPicker();
     private ComboBox<Integer> intensity = new ComboBox<>();
+    private ComboBox<CanvasPaintWrapper.Tools> tools = new ComboBox<>();
     private NewCanvasPane newCanvasPane = new NewCanvasPane(this.wrapper);
     private Button saveButton = new Button("Speichern");
 
@@ -48,6 +49,9 @@ public class Controller extends Application {
         this.customColorPane.addColor(null);
         this.customColorPane.addColor(null);
 
+        VBox colorPaneWrapper = new VBox();
+        colorPaneWrapper.getChildren().addAll(this.colorPane, this.customColorPane);
+
         this.colorPicker.getStyleClass().add(ColorPicker.STYLE_CLASS_BUTTON);
         this.colorPicker.setOnAction(e -> {
             this.customColorPane.addColor(this.colorPicker.getValue());
@@ -59,14 +63,15 @@ public class Controller extends Application {
         this.intensity.getSelectionModel().selectFirst();
         this.intensity.valueProperty().addListener((observable, oldValue, newValue) -> this.wrapper.setLineWidth(observable.getValue()));
 
-        VBox colorPaneWrapper = new VBox();
-        colorPaneWrapper.getChildren().addAll(this.colorPane, this.customColorPane);
+        this.tools.getItems().addAll(CanvasPaintWrapper.Tools.BRUSH);
+        this.tools.getSelectionModel().selectFirst();
+        this.tools.valueProperty().addListener(((observable, oldValue, newValue) -> this.wrapper.setTool(observable.getValue())));
 
         this.saveButton.setOnAction(e -> this.wrapper.save());
 
         this.toolPane.setSpacing(20);
         this.toolPane.setAlignment(Pos.CENTER_LEFT);
-        this.toolPane.getChildren().addAll(colorPaneWrapper, this.colorPicker, this.intensity, this.newCanvasPane, this.saveButton);
+        this.toolPane.getChildren().addAll(colorPaneWrapper, this.colorPicker, this.intensity, this.tools, this.newCanvasPane, this.saveButton);
 
         this.root.setTop(this.toolPane);
         this.root.setCenter(this.wrapper);
